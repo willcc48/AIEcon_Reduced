@@ -5,7 +5,7 @@ Setup conda environment and clone project:
 
       conda create -n "env_name" python=3.7
       conda activate env_name
-      git clone https://github.com/willcc48/AIEcon.git
+      git clone https://github.com/willcc48/AIEcon_Reduced.git
 
 Install AI Economist locally, allowing for custom changes in AI Economist environments and models. Run setup from root project directory:
 
