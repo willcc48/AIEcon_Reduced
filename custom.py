@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import IPython.display as display
 
 import numpy as np
-from utils import plotting
+import plotting
 from ai_economist import foundation
 
 def sample_random_action(agent, mask):
@@ -85,7 +85,7 @@ def play_random_episode(env, obs, placeholder, animate, plot_every, save):
             st.write(f"gif saved to: {save_file}")
 
 def sim_page(iterations, animate, plt_every, num_agents, save):
-    st.title('Optimal Tax Policy')
+    st.title('Custom Simulation')
     st.text("")
 
     if st.button("Run Simulation"):

@@ -1,5 +1,6 @@
 import streamlit as st
-from sims import optimal as optax
+import custom
+import optimal
 #import covid
 
 if __name__ == "__main__":
@@ -18,10 +19,11 @@ if __name__ == "__main__":
     st.markdown(hide_menu_style, unsafe_allow_html=True)
 
     PAGES = {
-        "Optimal Tax": optax,
-        #"COVID-19": covid,
-        "Climate": None,
-        "Learn More": None,
+        "Custom Component Sim": custom,
+        "Optimal Tax": optimal,
+        "COVID-19": None,
+        "Climate Policy": None,
+        "Learn More...": None,
     }
 
     st.sidebar.title("Settings")
