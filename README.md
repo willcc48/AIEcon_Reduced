@@ -11,7 +11,7 @@ Setup conda environment and clone project:
 
 *******If training, edit config.yaml in phase1/2 directory...
 
-Look for CPU, GPU, workers, episode length, etc
+*******Look for CPU, GPU, workers, episode length, etc
 
 Install Streamlit for web:
 
