@@ -1,5 +1,18 @@
 import streamlit as st
+
+
+import sys
+import os
+
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(sys.modules[__name__].__file__), "..")
+    )
+)
+
 from ai_economist import foundation
+
+
 from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
