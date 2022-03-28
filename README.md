@@ -8,6 +8,7 @@ Setup conda environment and clone project:
       git clone https://github.com/willcc48/AIEcon_Reduced.git
 
 *******No need to install ai-economist
+*******If training, edit config.yaml in phase1/2 directory...Look for CPU, GPU, worker params
 
 Install Streamlit for web:
 
