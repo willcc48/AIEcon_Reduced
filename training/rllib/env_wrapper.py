@@ -13,14 +13,23 @@ import os
 import pickle
 import random
 import warnings
+import sys
 
 import numpy as np
-from ai_economist import foundation
 from gym import spaces
 from gym.utils import seeding
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
 
 _BIG_NUMBER = 1e20
+
+
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(sys.modules[__name__].__file__), "../..")
+    )
+)
+
+from ai_economist import foundation
 
 
 def recursive_list_to_np_array(d):
