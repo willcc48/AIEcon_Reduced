@@ -38,7 +38,7 @@ def fig2nparr(fig):
 
 def init(iters, num_agents):
     import envs
-    cfg = envs.opt_config
+    cfg = envs.custom_config
     cfg['episode_length'] = iters
     cfg['n_agents'] = num_agents
     envs = foundation.make_env_instance(**cfg)
@@ -75,7 +75,7 @@ def play_random_episode(env, obs, placeholder, animate, plot_every, save):
             if save: frames.append(np_img)    
         
         if save:
-            save_file = './gifs/opt.gif'
+            save_file = './gifs/custom.gif'
             fps = 5
 
             from moviepy.editor import ImageSequenceClip
