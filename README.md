@@ -9,6 +9,10 @@ Setup conda environment and clone project:
 
 *******No need to install ai-economist
 
+*******If training, edit config.yaml in phase1/2 directory...
+
+*******Look for CPU, GPU, workers, episode length, dense log frequency, etc
+
 Install Streamlit for web:
 
       pip install streamlit

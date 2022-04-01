@@ -3,8 +3,20 @@ import matplotlib.pyplot as plt
 import IPython.display as display
 
 import numpy as np
+
+
+import sys
+import os
+
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(sys.modules[__name__].__file__), "..")
+    )
+)
+
 import plotting
 from ai_economist import foundation
+
 
 def sample_random_action(agent, mask):
     if agent.multi_action_mode:
@@ -38,7 +50,7 @@ def fig2nparr(fig):
 
 def init(iters, num_agents):
     import envs
-    cfg = envs.custom_config
+    cfg = envs.opt_config
     cfg['episode_length'] = iters
     cfg['n_agents'] = num_agents
     envs = foundation.make_env_instance(**cfg)
@@ -75,7 +87,7 @@ def play_random_episode(env, obs, placeholder, animate, plot_every, save):
             if save: frames.append(np_img)    
         
         if save:
-            save_file = './gifs/custom.gif'
+            save_file = './gifs/opt.gif'
             fps = 5
 
             from moviepy.editor import ImageSequenceClip
@@ -85,7 +97,7 @@ def play_random_episode(env, obs, placeholder, animate, plot_every, save):
             st.write(f"gif saved to: {save_file}")
 
 def sim_page(iterations, animate, plt_every, num_agents, save):
-    st.title('Custom Simulation')
+    st.title('Optimal Tax Policy')
     st.text("")
 
     if st.button("Run Simulation"):

@@ -11,7 +11,6 @@ import shutil
 import sys
 
 import yaml
-from ai_economist import foundation
 from .remote import remote_env_fun
 
 logging.basicConfig(format="%(asctime)s %(message)s")
@@ -24,6 +23,8 @@ sys.path.append(
         os.path.join(os.path.dirname(sys.modules[__name__].__file__), "../../..")
     )
 )
+
+from ai_economist import foundation
 
 
 def fill_out_run_dir(run_dir):

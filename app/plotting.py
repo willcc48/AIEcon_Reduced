@@ -7,6 +7,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+import sys
+import os
+
+sys.path.append(
+    os.path.abspath(
+        os.path.join(os.path.dirname(sys.modules[__name__].__file__), "..")
+    )
+)
+
 from ai_economist.foundation import landmarks, resources
 
 
