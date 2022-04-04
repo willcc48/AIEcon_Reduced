@@ -86,7 +86,7 @@ def play_random_episode(env, obs, placeholder, animate, plot_every, save):
             if save: frames.append(np_img)    
         
         if save:
-            save_file = './gifs/opt.gif'
+            save_file = './gifs/custom.gif'
             fps = 5
 
             from moviepy.editor import ImageSequenceClip
