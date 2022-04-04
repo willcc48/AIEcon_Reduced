@@ -26,7 +26,7 @@ if __name__ == "__main__":
         "Learn More...": None,
     }
 
-    st.sidebar.title("Settings")
+    st.sidebar.title("Configuration")
     model_select = st.sidebar.radio("Select Environment", list(PAGES.keys()))
 
     st.sidebar.markdown("***")

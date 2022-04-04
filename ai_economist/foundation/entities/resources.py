@@ -56,6 +56,13 @@ class Stone(Resource):
 
 
 @resource_registry.add
+class Widget(Resource):
+    name = "Widget"
+    color = np.array([0, 255, 0]) / 255.0
+    collectible = True # <--- Goes in agent inventory, but not in the world
+
+
+@resource_registry.add
 class Coin(Resource):
     """Coin resource. Included in all environments by default. Not collectible."""
 

@@ -21,7 +21,7 @@ from ai_economist.foundation import landmarks, resources
 
 def plot_map(maps, locs, ax=None, cmap_order=None):
     world_size = np.array(maps.get("Wood")).shape
-    max_health = {"Wood": 1, "Stone": 1, "House": 1}
+    max_health = {"Wood": 1, "Stone": 1, "Widget": 1, "House": 1}
     n_agents = len(locs)
 
     if ax is None:
@@ -267,7 +267,7 @@ def report(c_trades, all_builds, n_agents, a_indices=None):
     if a_indices is None:
         a_indices = list(range(n_agents))
     print(header_str(n_agents))
-    resources = ["Wood", "Stone"]
+    resources = ["Wood", "Stone", "Widget"]
     if c_trades is not None:
         for resource in resources:
             print(full_trade_str(c_trades, resource, a_indices, income=False))
@@ -302,7 +302,7 @@ def breakdown(log, remap_key=None):
             all_builds.append(this_build)
 
     if trading_active:
-        c_trades = {"Stone": [], "Wood": []}
+        c_trades = {"Stone": [], "Wood": [], "Widget": []}
         for t, trades in enumerate(log["Trade"]):
             if isinstance(trades, dict):
                 trades_ = trades["trades"]
@@ -332,6 +332,14 @@ def breakdown(log, remap_key=None):
             ],
             "Buy Wood": [
                 sum([-t["price"] for t in c_trades["Wood"] if t["buyer"] == aidx[i]])
+                for i in range(n)
+            ],
+            "Sell Widget": [
+                sum([t["income"] for t in c_trades["Widget"] if t["seller"] == aidx[i]])
+                for i in range(n)
+            ],
+            "Buy Widget": [
+                sum([-t["price"] for t in c_trades["Widget"] if t["buyer"] == aidx[i]])
                 for i in range(n)
             ],
             "Build": [
@@ -364,7 +372,7 @@ def breakdown(log, remap_key=None):
     report(c_trades, all_builds, n, aidx)
 
     cmap = plt.get_cmap("jet", n)
-    rs = ["Wood", "Stone", "Coin"]
+    rs = ["Wood", "Stone", "Widget", "Coin"]
 
     fig1, axes = plt.subplots(1, len(rs) + 1, figsize=(16, 4), sharey=False)
     for r, ax in zip(rs, axes):
@@ -413,7 +421,7 @@ def breakdown(log, remap_key=None):
 
     if trading_active:
         for i, ax in enumerate(axes[1]):
-            for r in ["Wood", "Stone"]:
+            for r in ["Wood", "Stone", "Widget"]:
                 tmp = [
                     (s["t"], s["income"]) for s in c_trades[r] if s["seller"] == aidx[i]
                 ]

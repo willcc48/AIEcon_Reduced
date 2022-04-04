@@ -1,5 +1,51 @@
 # Define the configuration of the environment that will be built
 
+custom_config = {
+    # ===== STANDARD ARGUMENTS ======
+    'n_agents': 4,          # Number of non-planner agents
+    'world_size': [15, 15], # [Height, Width] of the env world
+    'episode_length': 1000, # Number of timesteps per episode
+    
+    # In multi-action-mode, the policy selects an action for each action subspace (defined in component code)
+    # Otherwise, the policy selects only 1 action
+    'multi_action_mode_agents': False,
+    'multi_action_mode_planner': True,
+    
+    # When flattening observations, concatenate scalar & vector observations before output
+    # Otherwise, return observations with minimal processing
+    'flatten_observations': False,
+    # When Flattening masks, concatenate each action subspace mask into a single array
+    # Note: flatten_masks = True is recommended for masking action logits
+    'flatten_masks': True,
+    
+    
+    # ===== COMPONENTS =====
+    # Which components to use (specified as list of {"component_name": {component_kwargs}} dictionaries)
+    #   "component_name" refers to the component class's name in the Component Registry
+    #   {component_kwargs} is a dictionary of kwargs passed to the component class
+    # The order in which components reset, step, and generate obs follows their listed order below
+    'components': [
+        # (1) Building houses
+        {'Build': {}},
+        # (2) Trading collectible resources
+        {'ContinuousDoubleAuction': {'max_num_orders': 5}},
+        # (3) Movement and resource collection
+        {'Gather': {}},
+        # (4) Let each mobile agent buy widgets from a virtual store.
+        {'BuyWidgetFromVirtualStore': {'widget_refresh_rate': 0.1}},  # <--- This.
+    ],
+
+    # ===== SCENARIO =====
+    # Which scenario class to use (specified by the class's name in the Scenario Registry)
+    'scenario_name': 'uniform/simple_wood_and_stone',
+    
+    # (optional) kwargs of the chosen scenario class
+    'starting_agent_coin': 10,
+    'starting_stone_coverage': 0.10,
+    'starting_wood_coverage':  0.10,
+}
+
+
 opt_config = {
     # ===== SCENARIO CLASS =====
     # Which Scenario class to use: the class's name in the Scenario Registry (foundation.scenarios).

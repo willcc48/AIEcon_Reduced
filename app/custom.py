@@ -49,7 +49,7 @@ def fig2nparr(fig):
 
 def init(iters, num_agents):
     import envs
-    cfg = envs.opt_config
+    cfg = envs.custom_config
     cfg['episode_length'] = iters
     cfg['n_agents'] = num_agents
     envs = foundation.make_env_instance(**cfg)
