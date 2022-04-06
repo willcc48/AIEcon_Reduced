@@ -63,7 +63,7 @@ class LayoutFromFile(BaseEnvironment):
 
     name = "layout_from_file/simple_wood_and_stone"
     agent_subclasses = ["BasicMobileAgent", "BasicPlanner"]
-    required_entities = ["Wood", "Stone", "Water"]
+    required_entities = ["Wood", "Stone", "Gold", "Water"]
 
     def __init__(
         self,
@@ -101,7 +101,7 @@ class LayoutFromFile(BaseEnvironment):
             self.env_layout = self.env_layout_string.split(";")
 
         # Convert the layout to landmark maps
-        landmark_lookup = {"W": "Wood", "S": "Stone", "@": "Water"}
+        landmark_lookup = {"W": "Wood", "S": "Stone", "G": "Gold", "@": "Water"}
         self._source_maps = {
             r: np.zeros(self.world_size) for r in landmark_lookup.values()
         }
@@ -123,9 +123,15 @@ class LayoutFromFile(BaseEnvironment):
                 "regen_halfwidth": 0,
                 "max_health": 1,
             },
+            Gold={
+                "regen_weight": float(resource_regen_prob),
+                "regen_halfwidth": 0,
+                "max_health": 1,
+            },
         )
         assert 0 <= self.layout_specs["Wood"]["regen_weight"] <= 1
         assert 0 <= self.layout_specs["Stone"]["regen_weight"] <= 1
+        assert 0 <= self.layout_specs["Gold"]["regen_weight"] <= 1
 
         # How much coin do agents begin with at upon reset
         self.starting_agent_coin = float(starting_agent_coin)
@@ -330,7 +336,7 @@ class LayoutFromFile(BaseEnvironment):
         self.world.maps.clear()
         for landmark, landmark_map in self._source_maps.items():
             self.world.maps.set(landmark, landmark_map)
-            if landmark in ["Stone", "Wood"]:
+            if landmark in ["Stone", "Wood", "Gold"]:
                 self.world.maps.set(landmark + "SourceBlock", landmark_map)
 
     def reset_agent_states(self):
@@ -381,7 +387,7 @@ class LayoutFromFile(BaseEnvironment):
         regeneration.
         """
 
-        resources = ["Wood", "Stone"]
+        resources = ["Wood", "Stone", "Gold"]
 
         for resource in resources:
             d = 1 + (2 * self.layout_specs[resource]["regen_halfwidth"])

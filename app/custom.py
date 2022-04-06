@@ -47,11 +47,12 @@ def fig2nparr(fig):
     buf = np.roll ( buf, 3, axis = 2 )
     return buf
 
-def init(iters, num_agents):
+def init(iters, num_agents, world_size, scenario_name):
     import envs
     cfg = envs.custom_config
     cfg['episode_length'] = iters
     cfg['n_agents'] = num_agents
+    cfg['world_size'] = [world_size, world_size]
     envs = foundation.make_env_instance(**cfg)
     obs = envs.reset()
     return envs, obs
@@ -95,15 +96,15 @@ def play_random_episode(env, obs, placeholder, animate, plot_every, save):
         
             st.write(f"gif saved to: {save_file}")
 
-def sim_page(iterations, animate, plt_every, num_agents, save):
-    st.title('Custom Simulation')
+def sim_page(iterations, animate, plt_every, num_agents, save, world_size, scenario_name):
+    st.title('AI Economist Simulation')
     st.text("")
 
     if st.button("Run Simulation"):
         st.markdown("***")
         st.write("Running...")
 
-        env, obs = init(iterations, num_agents)
+        env, obs = init(iterations, num_agents, world_size, scenario_name)
         placeholder = st.empty()
 
         play_random_episode(env, obs, placeholder, animate, plt_every, save)

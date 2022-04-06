@@ -47,19 +47,19 @@ class Wood(Resource):
 
 
 @resource_registry.add
+class Gold(Resource):
+    name = "Gold"
+    color = np.array([153, 101, 21]) / 255.0
+    collectible = True # <--- Goes in agent inventory, but not in the world
+
+
+@resource_registry.add
 class Stone(Resource):
     """Stone resource. collectible."""
 
     name = "Stone"
     color = np.array([241, 233, 219]) / 255.0
     collectible = True
-
-
-@resource_registry.add
-class Widget(Resource):
-    name = "Widget"
-    color = np.array([0, 255, 0]) / 255.0
-    collectible = True # <--- Goes in agent inventory, but not in the world
 
 
 @resource_registry.add

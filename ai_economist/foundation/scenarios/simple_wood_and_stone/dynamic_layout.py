@@ -75,7 +75,7 @@ class Uniform(BaseEnvironment):
 
     name = "uniform/simple_wood_and_stone"
     agent_subclasses = ["BasicMobileAgent", "BasicPlanner"]
-    required_entities = ["Wood", "Stone", "Widget"]
+    required_entities = ["Wood", "Stone", "Gold"]
 
     def __init__(
         self,
@@ -91,13 +91,13 @@ class Uniform(BaseEnvironment):
         stone_regen_halfwidth=0,
         stone_regen_weight=0.01,
         stone_max_health=1,
-        starting_widget_coverage=0.025,
-        widget_regen_halfwidth=0,
-        widget_regen_weight=0.01,
-        widget_max_health=1,
+        starting_gold_coverage=0.025,
+        gold_regen_halfwidth=0,
+        gold_regen_weight=0.01,
+        gold_max_health=1,
         wood_clumpiness=0.35,
         stone_clumpiness=0.5,
-        widget_clumpiness=0.5,
+        gold_clumpiness=1,
         gradient_steepness=8,
         checker_source_blocks=False,
         starting_agent_coin=0,
@@ -128,15 +128,15 @@ class Uniform(BaseEnvironment):
         #  - Clumpiness: degree to which resources are spatially clustered
         #  - Gradient Steepness: degree to which stone/wood
         #  are restricted to top/bottom of map
-        self.layout_specs = dict(Wood={}, Stone={}, Widget={})
+        self.layout_specs = dict(Wood={}, Stone={}, Gold={})
         #
         if starting_wood_coverage >= 1:
             starting_wood_coverage /= np.prod(self.world_size)
         if starting_stone_coverage >= 1:
             starting_stone_coverage /= np.prod(self.world_size)
-        if starting_widget_coverage >= 1:
-            starting_widget_coverage /= np.prod(self.world_size)
-        assert (starting_stone_coverage + starting_wood_coverage + starting_widget_coverage) < 0.5
+        if starting_gold_coverage >= 1:
+            starting_gold_coverage /= np.prod(self.world_size)
+        assert (starting_stone_coverage + starting_wood_coverage + starting_gold_coverage) < 0.5
         #
         self._checker_source_blocks = bool(checker_source_blocks)
         c, r = np.meshgrid(
@@ -151,38 +151,38 @@ class Uniform(BaseEnvironment):
         self.layout_specs["Stone"]["starting_coverage"] = (
             float(starting_stone_coverage) * m
         )
-        self.layout_specs["Widget"]["starting_coverage"] = (
-            float(starting_widget_coverage) * m
+        self.layout_specs["Gold"]["starting_coverage"] = (
+            float(starting_gold_coverage) * m
         )
         assert 0 < self.layout_specs["Wood"]["starting_coverage"] < 1
         assert 0 < self.layout_specs["Stone"]["starting_coverage"] < 1
-        assert 0 < self.layout_specs["Widget"]["starting_coverage"] < 1
+        assert 0 < self.layout_specs["Gold"]["starting_coverage"] < 1
         #
         self.layout_specs["Wood"]["regen_halfwidth"] = int(wood_regen_halfwidth)
         self.layout_specs["Stone"]["regen_halfwidth"] = int(stone_regen_halfwidth)
-        self.layout_specs["Widget"]["regen_halfwidth"] = int(widget_regen_halfwidth)
+        self.layout_specs["Gold"]["regen_halfwidth"] = int(gold_regen_halfwidth)
         assert 0 <= self.layout_specs["Wood"]["regen_halfwidth"] <= 3
         assert 0 <= self.layout_specs["Stone"]["regen_halfwidth"] <= 3
-        assert 0 <= self.layout_specs["Widget"]["regen_halfwidth"] <= 3
+        assert 0 <= self.layout_specs["Gold"]["regen_halfwidth"] <= 3
         #
         self.layout_specs["Wood"]["regen_weight"] = float(wood_regen_weight)
         self.layout_specs["Stone"]["regen_weight"] = float(stone_regen_weight)
-        self.layout_specs["Widget"]["regen_weight"] = float(widget_regen_weight)
+        self.layout_specs["Gold"]["regen_weight"] = float(gold_regen_weight)
         assert 0 <= self.layout_specs["Wood"]["regen_weight"] <= 1
         assert 0 <= self.layout_specs["Stone"]["regen_weight"] <= 1
-        assert 0 <= self.layout_specs["Widget"]["regen_weight"] <= 1
+        assert 0 <= self.layout_specs["Gold"]["regen_weight"] <= 1
         #
         self.layout_specs["Wood"]["max_health"] = int(wood_max_health)
         self.layout_specs["Stone"]["max_health"] = int(stone_max_health)
-        self.layout_specs["Widget"]["max_health"] = int(widget_max_health)
+        self.layout_specs["Gold"]["max_health"] = int(gold_max_health)
         assert self.layout_specs["Wood"]["max_health"] > 0
         assert self.layout_specs["Stone"]["max_health"] > 0
-        assert self.layout_specs["Widget"]["max_health"] > 0
+        assert self.layout_specs["Gold"]["max_health"] > 0
         #
         self.clumpiness = {
             "Wood": float(wood_clumpiness),
             "Stone": float(stone_clumpiness),
-            "Widget": float(widget_clumpiness),
+            "Gold": float(gold_clumpiness),
         }
         assert all(0 <= v <= 1 for v in self.clumpiness.values())
         #
@@ -322,7 +322,7 @@ class Uniform(BaseEnvironment):
         return {
             "Wood": prob_gradient * self.layout_specs["Wood"]["starting_coverage"],
             "Stone": prob_gradient[-1::-1] * self.layout_specs["Wood"]["starting_coverage"],
-            "Widget": prob_gradient * self.layout_specs["Widget"]["starting_coverage"],
+            "Gold": prob_gradient * self.layout_specs["Gold"]["starting_coverage"],
         }
 
     # The following methods must be implemented for each scenario
@@ -346,7 +346,7 @@ class Uniform(BaseEnvironment):
                 k: np.zeros_like(v) for k, v in self.source_prob_maps.items()
             }
 
-            resources = ["Wood", "Stone", "Widget"]
+            resources = ["Wood", "Stone", "Gold"]
 
             for resource in resources:
                 clump = 1 - np.clip(self.clumpiness[resource], 0.0, 0.99)
@@ -460,7 +460,7 @@ class Uniform(BaseEnvironment):
         regeneration.
         """
 
-        resources = ["Wood", "Stone", "Widget"]
+        resources = ["Wood", "Stone", "Gold"]
 
         for resource in resources:
             d = 1 + (2 * self.layout_specs[resource]["regen_halfwidth"])
