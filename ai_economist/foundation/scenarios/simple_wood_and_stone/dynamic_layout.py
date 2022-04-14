@@ -9,6 +9,7 @@ from copy import deepcopy
 import numpy as np
 from scipy import signal
 
+from ai_economist.foundation.agents import mobiles
 from ai_economist.foundation.base.base_env import BaseEnvironment, scenario_registry
 from ai_economist.foundation.scenarios.utils import rewards, social_metrics
 
@@ -434,6 +435,23 @@ class Uniform(BaseEnvironment):
         self.world.planner.state["escrow"] = {
             k: 0 for k in self.world.planner.escrow.keys()
         }
+
+        # give agent(s) tool
+        import random
+        tool_exists = False
+        frac = 1 / (len(self.all_agents) - 1)
+        for i in range(len(self.all_agents)):
+            if isinstance(agent, mobiles.BasicMobileAgent):
+                if random.random() < frac:
+                    self.all_agents[i].state["inventory"]["Tool"] = 1
+                    tool_exists = True
+                else: self.all_agents[i].state["inventory"]["Tool"] = 0
+                self.all_agents[i].state["escrow"]["Tool"] = 0
+        if not tool_exists:
+            self.all_agents[0].state["inventory"]["Tool"] = 1
+
+        for agent in self.all_agents:
+            print(agent.state["inventory"])
 
         # Place the agents randomly in the world
         for agent in self.world.get_random_order_agents():

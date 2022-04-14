@@ -45,13 +45,19 @@ class Wood(Resource):
     color = np.array([107, 143, 113]) / 255.0
     collectible = True
 
-
+# allows lots of coin, but how is it invested?
 @resource_registry.add
 class Gold(Resource):
     name = "Gold"
     color = np.array([153, 101, 21]) / 255.0
-    collectible = True # <--- Goes in agent inventory, but not in the world
+    collectible = True
 
+# probability p of agent spawning with Tool
+@resource_registry.add
+class Tool(Resource):
+    name = "Tool"
+    color = np.array([0, 255, 0]) / 255.0
+    collectible = False
 
 @resource_registry.add
 class Stone(Resource):
@@ -60,7 +66,6 @@ class Stone(Resource):
     name = "Stone"
     color = np.array([241, 233, 219]) / 255.0
     collectible = True
-
 
 @resource_registry.add
 class Coin(Resource):

@@ -57,7 +57,6 @@ class Registry:
 
         See Registry class docstring for example.
         """
-        print(cls.name)
         assert "." not in cls.name
         if self.base_class:
             assert issubclass(cls, self.base_class)

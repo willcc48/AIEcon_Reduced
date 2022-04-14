@@ -134,6 +134,9 @@ class Gather(BaseComponent):
                 raise ValueError
 
             for resource, health in world.location_resources(new_r, new_c).items():
+                """
+                ONLY GATHER GOLD IF IN POSSESSION OF PICKAXE, OR COST MUCH MORE
+                """
                 if health >= 1:
                     n_gathered = 1 + (rand() < agent.state["bonus_gather_prob"])
                     agent.state["inventory"][resource] += n_gathered
