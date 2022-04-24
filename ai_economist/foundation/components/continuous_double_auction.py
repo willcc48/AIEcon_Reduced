@@ -74,7 +74,7 @@ class ContinuousDoubleAuction(BaseComponent):
 
         # Each collectible resource in the world can be traded via this component
         self.commodities = [
-            r for r in self.world.resources if resource_registry.get(r).collectible
+            r for r in self.world.resources if resource_registry.get(r).collectible and r != "Gold"
         ]
 
         # These get reset at the start of an episode:
@@ -154,13 +154,15 @@ class ContinuousDoubleAuction(BaseComponent):
 
     def can_bid(self, resource, agent):
         """If agent can submit a bid for resource."""
-        return self.n_orders[resource][agent.idx] < self.max_num_orders
+        return (self.n_orders[resource][agent.idx] < self.max_num_orders
+                and resource != "Gold")
 
     def can_ask(self, resource, agent):
         """If agent can submit an ask for resource."""
         return (
             self.n_orders[resource][agent.idx] < self.max_num_orders
             and agent.state["inventory"][resource] > 0
+            and resource != "Gold"
         )
 
     # Core components for this market
@@ -330,6 +332,9 @@ class ContinuousDoubleAuction(BaseComponent):
                         seller.state["escrow"][resource] -= 1
                         buyer.state["inventory"][resource] += 1
 
+                        if resource == "Gold":
+                            print("Traded Gold")
+
                         # Buyer's money (already set aside) leaves escrow
                         pre_payment = int(trade["bid"])
                         buyer.state["escrow"]["Coin"] -= pre_payment
@@ -448,6 +453,8 @@ class ContinuousDoubleAuction(BaseComponent):
         world = self.world
 
         for resource in self.commodities:
+            if resource == "Gold":
+                print("Commodity is Gold")
             for agent in world.agents:
                 self.price_history[resource][agent.idx] *= 0.995
 

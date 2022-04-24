@@ -4,6 +4,7 @@
 # For full license text, see the LICENSE file in the repo root
 # or https://opensource.org/licenses/BSD-3-Clause
 
+from math import ceil
 import numpy as np
 from numpy.random import rand
 
@@ -43,8 +44,6 @@ class Gather(BaseComponent):
         *base_component_args,
         move_labor=1.0,
         collect_labor=1.0,
-        collect_gold_labor=5.0,
-        collect_gold_reward=1.0,
         skill_dist="none",
         **base_component_kwargs
     ):
@@ -55,12 +54,6 @@ class Gather(BaseComponent):
 
         self.collect_labor = float(collect_labor)
         assert self.collect_labor >= 0
-
-        self.collect_gold_labor = float(collect_gold_labor)
-        assert self.collect_gold_labor >= 0
-
-        self.collect_gold_reward = float(collect_gold_reward)
-        assert self.collect_gold_reward >= 0
 
         self.skill_dist = skill_dist.lower()
         assert self.skill_dist in ["none", "pareto", "lognormal"]
@@ -142,49 +135,61 @@ class Gather(BaseComponent):
                 raise ValueError
 
             for resource, health in world.location_resources(new_r, new_c).items():
-                """
-                ONLY GATHER GOLD IF IN POSSESSION OF PICKAXE, OR COST MUCH MORE
-                """
-                if health >= 1:
-                    if resource == "Gold" and agent.state["inventory"]["Tool"] > 0:
-                        # get lots of coin right away with tool
-                        n_gathered = self.collect_gold_reward #1 + (rand() < agent.state["bonus_gather_prob"])
-                        # Incur the labor cost of collecting a resource
-                        
-                        """
-                        ADD GOLD
-                        should gold be tradable?
-                        """
-                        agent.state["inventory"]["Coin"] += self.collect_gold_reward
-                        print(agent.state["inventory"]["Coin"])
-                        agent.state["endogenous"]["Labor"] += self.collect_gold_labor
-                        agent.state["inventory"][resource] += n_gathered
-                        world.consume_resource(resource, new_r, new_c)
-                        # Log the gather
-                        gathers.append(
-                            dict(
-                                agent=agent.idx,
-                                resource=resource,
-                                n=n_gathered,
-                                loc=[new_r, new_c],
-                            )
-                        )
+                if health < 1: continue
 
-                    else:                 
-                        n_gathered = 1 + (rand() < agent.state["bonus_gather_prob"])
-                        # Incur the labor cost of collecting a resource
-                        agent.state["endogenous"]["Labor"] += self.collect_labor
-                        agent.state["inventory"][resource] += n_gathered
-                        world.consume_resource(resource, new_r, new_c)
-                        # Log the gather
-                        gathers.append(
-                            dict(
-                                agent=agent.idx,
-                                resource=resource,
-                                n=n_gathered,
-                                loc=[new_r, new_c],
-                            )
-                        )
+                # does auction use gold or items? if only items, need to make gold useful for something, like influence?
+
+                # if gold, reward with coin now
+
+                # specialization is a n_gathered per block metric
+
+                # consider amplifying skill dist yields - or dont amplify yields too much
+
+                # investigate economic principles
+
+                # what is health for?
+
+                # will labor become organized? If someone is a leader?
+
+                # concept of community and community yield through buildings?
+
+                # for ui - diff skill dists and add sub features and maps other params and taxes
+
+                # learn about the ML models used
+
+                # constraints on where to build
+
+                n_gathered = 1 # scale up with specialization levels
+                labor = 5   # scale down with specialization levels
+                yield_per_lvl = 2
+                skill_factor = 1
+                blocks_to_level_up = 7
+
+                spec = agent.state["endogenous"]["Specialization"]
+                if spec[resource][0]:
+                    if resource == "Gold": agent.state["inventory"]["Coin"] += spec[resource][0] * yield_per_lvl
+                    n_gathered = spec[resource][0] * yield_per_lvl + skill_factor * (rand() < agent.state["bonus_gather_prob"])
+                    labor = max(1, ceil(labor / spec[resource][0]))
+                elif resource == "Gold": agent.state["inventory"]["Coin"] += 1
+
+                # increment progress to level up specialization
+                if spec[resource][1] + 1  >= blocks_to_level_up:
+                    agent.state["endogenous"]["Specialization"][resource] = (spec[resource][0] + 1, 0)
+                else: agent.state["endogenous"]["Specialization"][resource] = (spec[resource][0], spec[resource][1] + 1)
+
+                agent.state["endogenous"]["Labor"] += labor
+                agent.state["inventory"][resource] += n_gathered
+                world.consume_resource(resource, new_r, new_c)
+
+                # Log the gather
+                gathers.append(
+                    dict(
+                        agent=agent.idx,
+                        resource=resource,
+                        n=n_gathered,
+                        loc=[new_r, new_c],
+                    )
+                )
 
         self.gathers.append(gathers)
 

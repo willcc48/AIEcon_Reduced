@@ -34,3 +34,9 @@ class Labor(Endogenous):
     """Labor accumulated through working. Included in all environments by default."""
 
     name = "Labor"
+
+@endogenous_registry.add
+class Specialization(Endogenous):
+    """Labor accumulated through working. Included in all environments by default."""
+
+    name = "Specialization"

@@ -112,6 +112,10 @@ def sim_page(iterations, animate, plt_every, num_agents, save, world_size, scena
 
         fig0, fig1, fig2 = breakdown(env)
 
+        for agent in env.world.agents:
+            #print(agent.state["inventory"])
+            print(agent.state["endogenous"]["Specialization"])
+
         st.subheader("Analytics")
         st.pyplot(fig0)
         st.pyplot(fig1)

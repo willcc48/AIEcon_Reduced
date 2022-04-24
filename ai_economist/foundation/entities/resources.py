@@ -52,13 +52,6 @@ class Gold(Resource):
     color = np.array([153, 101, 21]) / 255.0
     collectible = True
 
-# probability p of agent spawning with Tool
-@resource_registry.add
-class Tool(Resource):
-    name = "Tool"
-    color = np.array([0, 255, 0]) / 255.0
-    collectible = False
-
 @resource_registry.add
 class Stone(Resource):
     """Stone resource. collectible."""

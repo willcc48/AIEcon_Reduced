@@ -7,6 +7,7 @@
 from copy import deepcopy
 
 import numpy as np
+from regex import R
 from scipy import signal
 
 from ai_economist.foundation.agents import mobiles
@@ -436,19 +437,21 @@ class Uniform(BaseEnvironment):
             k: 0 for k in self.world.planner.escrow.keys()
         }
 
-        # give agent(s) tool
+        # give agent(s) random specialization types (skill, num_blocks_gathered)
+        # skill will level up when num of gathered blocks increases
         import random
-        tool_exists = False
-        frac = 1 / (len(self.all_agents) - 1)
-        for i in range(len(self.all_agents)):
+        frac = 1.0 / 3.0
+        for agent in self.world.agents:
             if isinstance(agent, mobiles.BasicMobileAgent):
-                if random.random() < frac:
-                    self.all_agents[i].state["inventory"]["Tool"] = 1
-                    tool_exists = True
-                else: self.all_agents[i].state["inventory"]["Tool"] = 0
-                self.all_agents[i].state["escrow"]["Tool"] = 0
-        if not tool_exists:
-            self.all_agents[0].state["inventory"]["Tool"] = 1
+                spec = {"Gold": (0, 0), "Stone": (0, 0), "Wood": (0, 0)}
+
+                r = random.random()
+                if r < frac: spec["Gold"] = (1, 0)
+                elif r < 2*frac: spec["Stone"] = (1, 0)
+                elif r < 3*frac: spec["Wood"] = (1, 0)
+                
+                agent.state["endogenous"]["Specialization"] = spec
+
 
         # Place the agents randomly in the world
         for agent in self.world.get_random_order_agents():
