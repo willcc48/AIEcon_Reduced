@@ -30,10 +30,9 @@ env:
       - 0.001
       tax_model: model_wrapper
       usd_scaling: 1000
-  dense_log_frequency: 20
+  dense_log_frequency: 100
   energy_cost: 0.21
   energy_warmup_constant: 0
-  env_layout_file: quadrant_25x25_20each_30clump.txt
   episode_length: 1000
   fixed_four_skill_and_loc: true
   flatten_masks: true
@@ -44,17 +43,17 @@ env:
   n_agents: 4
   planner_gets_spatial_info: false
   planner_reward_type: coin_eq_times_productivity
-  scenario_name: layout_from_file/simple_wood_and_stone
+  scenario_name: uniform/simple_wood_and_stone
   starting_agent_coin: 0
   world_size:
   - 25
   - 25
 general:
-  ckpt_frequency_steps: 20000000
-  cpus: 15
-  episodes: 4000000
+  ckpt_frequency_steps: 750000
+  cpus: 64
+  episodes: 25000
   gpus: 0
-  restore_tf_weights_agents: phase1/ckpts/agent.tf.weights.global-step-25000000 # path to phase 1 agent policy checkpoint
+  restore_tf_weights_agents: phase1/ckpts/agent.tf.weights.global-step-2508800 # path to phase 1 agent policy checkpoint
   restore_tf_weights_planner: ''
   train_planner: true
 agent_policy:
@@ -124,7 +123,7 @@ trainer:
   num_gpus: 0
   num_gpus_per_worker: 0
   num_sgd_iter: 1
-  num_workers: 15
+  num_workers: 64
   observation_filter: NoFilter
   rollout_fragment_length: 200
   seed: null
@@ -133,7 +132,7 @@ trainer:
   tf_session_args:
     allow_soft_placement: true
     device_count:
-      CPU: 15
+      CPU: 64
       GPU: 0
     gpu_options:
       allow_growth: true
