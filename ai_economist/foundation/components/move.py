@@ -159,6 +159,8 @@ class Gather(BaseComponent):
 
                 # constraints on where to build
 
+                # would like to encourage trading - get numbers of other resources to be very low
+
                 n_gathered = 1 # scale up with specialization levels
                 labor = 5   # scale down with specialization levels
                 yield_per_lvl = 2
@@ -170,6 +172,7 @@ class Gather(BaseComponent):
                     if resource == "Gold": agent.state["inventory"]["Coin"] += spec[resource][0] * yield_per_lvl
                     n_gathered = spec[resource][0] * yield_per_lvl + skill_factor * (rand() < agent.state["bonus_gather_prob"])
                     labor = max(1, ceil(labor / spec[resource][0]))
+                #else: continue
                 elif resource == "Gold": agent.state["inventory"]["Coin"] += 1
 
                 # increment progress to level up specialization
