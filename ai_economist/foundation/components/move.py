@@ -43,6 +43,8 @@ class Gather(BaseComponent):
         *base_component_args,
         move_labor=1.0,
         collect_labor=1.0,
+        collect_gold_labor=5.0,
+        collect_gold_reward=1.0,
         skill_dist="none",
         **base_component_kwargs
     ):
@@ -53,6 +55,12 @@ class Gather(BaseComponent):
 
         self.collect_labor = float(collect_labor)
         assert self.collect_labor >= 0
+
+        self.collect_gold_labor = float(collect_gold_labor)
+        assert self.collect_gold_labor >= 0
+
+        self.collect_gold_reward = float(collect_gold_reward)
+        assert self.collect_gold_reward >= 0
 
         self.skill_dist = skill_dist.lower()
         assert self.skill_dist in ["none", "pareto", "lognormal"]
@@ -138,20 +146,45 @@ class Gather(BaseComponent):
                 ONLY GATHER GOLD IF IN POSSESSION OF PICKAXE, OR COST MUCH MORE
                 """
                 if health >= 1:
-                    n_gathered = 1 + (rand() < agent.state["bonus_gather_prob"])
-                    agent.state["inventory"][resource] += n_gathered
-                    world.consume_resource(resource, new_r, new_c)
-                    # Incur the labor cost of collecting a resource
-                    agent.state["endogenous"]["Labor"] += self.collect_labor
-                    # Log the gather
-                    gathers.append(
-                        dict(
-                            agent=agent.idx,
-                            resource=resource,
-                            n=n_gathered,
-                            loc=[new_r, new_c],
+                    if resource == "Gold" and agent.state["inventory"]["Tool"] > 0:
+                        # get lots of coin right away with tool
+                        n_gathered = self.collect_gold_reward #1 + (rand() < agent.state["bonus_gather_prob"])
+                        # Incur the labor cost of collecting a resource
+                        
+                        """
+                        ADD GOLD
+                        should gold be tradable?
+                        """
+                        agent.state["inventory"]["Coin"] += self.collect_gold_reward
+                        print(agent.state["inventory"]["Coin"])
+                        agent.state["endogenous"]["Labor"] += self.collect_gold_labor
+                        agent.state["inventory"][resource] += n_gathered
+                        world.consume_resource(resource, new_r, new_c)
+                        # Log the gather
+                        gathers.append(
+                            dict(
+                                agent=agent.idx,
+                                resource=resource,
+                                n=n_gathered,
+                                loc=[new_r, new_c],
+                            )
                         )
-                    )
+
+                    else:                 
+                        n_gathered = 1 + (rand() < agent.state["bonus_gather_prob"])
+                        # Incur the labor cost of collecting a resource
+                        agent.state["endogenous"]["Labor"] += self.collect_labor
+                        agent.state["inventory"][resource] += n_gathered
+                        world.consume_resource(resource, new_r, new_c)
+                        # Log the gather
+                        gathers.append(
+                            dict(
+                                agent=agent.idx,
+                                resource=resource,
+                                n=n_gathered,
+                                loc=[new_r, new_c],
+                            )
+                        )
 
         self.gathers.append(gathers)
 

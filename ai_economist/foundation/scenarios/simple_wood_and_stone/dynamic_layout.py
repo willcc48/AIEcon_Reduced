@@ -450,9 +450,6 @@ class Uniform(BaseEnvironment):
         if not tool_exists:
             self.all_agents[0].state["inventory"]["Tool"] = 1
 
-        for agent in self.all_agents:
-            print(agent.state["inventory"])
-
         # Place the agents randomly in the world
         for agent in self.world.get_random_order_agents():
             r = np.random.randint(0, self.world_size[0])
